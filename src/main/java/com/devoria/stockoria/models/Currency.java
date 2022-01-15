@@ -1,24 +1,24 @@
 package com.devoria.stockoria.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Indexed;
 
 import java.util.Date;
 
-@Document(collection = "users")
+@Document(collection = "currencies")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-@EnableMongoAuditing
-public class User {
+public class Currency {
 
     @Id
     private ObjectId id;
@@ -28,7 +28,7 @@ public class User {
     private Date createdDate = new Date();
     @LastModifiedDate
     private Date lastModifiedDate = new Date();
-    private String username;
-    private String email;
+    private String code;
+    private String symbol;
 
 }
