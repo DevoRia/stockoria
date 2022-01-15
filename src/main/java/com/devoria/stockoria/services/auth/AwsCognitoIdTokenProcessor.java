@@ -2,7 +2,6 @@ package com.devoria.stockoria.services.auth;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,11 +16,14 @@ import static java.util.List.of;
 @Component
 public class AwsCognitoIdTokenProcessor {
 
-    @Autowired
-    private JwtConfiguration jwtConfiguration;
+    private final JwtConfiguration jwtConfiguration;
 
-    @Autowired
-    private ConfigurableJWTProcessor configurableJWTProcessor;
+    private final ConfigurableJWTProcessor configurableJWTProcessor;
+
+    public AwsCognitoIdTokenProcessor(JwtConfiguration jwtConfiguration, ConfigurableJWTProcessor configurableJWTProcessor) {
+        this.jwtConfiguration = jwtConfiguration;
+        this.configurableJWTProcessor = configurableJWTProcessor;
+    }
 
     public Authentication authenticate(HttpServletRequest request) throws Exception {
         String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());

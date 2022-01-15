@@ -1,15 +1,13 @@
 package com.devoria.stockoria.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Builder
 @Setter
-public class Login {
+@Getter
+public class Transaction {
 
     private String username;
     private String password;

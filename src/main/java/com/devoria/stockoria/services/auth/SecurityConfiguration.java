@@ -1,6 +1,5 @@
 package com.devoria.stockoria.services.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -9,8 +8,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AwsCognitoJwtAuthFilter awsCognitoJwtAuthenticationFilter;
+    private final AwsCognitoJwtAuthFilter awsCognitoJwtAuthenticationFilter;
+
+    public SecurityConfiguration(AwsCognitoJwtAuthFilter awsCognitoJwtAuthenticationFilter) {
+        this.awsCognitoJwtAuthenticationFilter = awsCognitoJwtAuthenticationFilter;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -18,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
             .authorizeRequests()
-            .antMatchers("**/health").permitAll()
+            .antMatchers("/health").permitAll()
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(awsCognitoJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
