@@ -29,6 +29,7 @@ public class Currency {
     @LastModifiedDate
     private Date lastModifiedDate = new Date();
     private String code;
+    private String name;
     private String symbol;
 
 }
