@@ -22,7 +22,7 @@ public class CurrencyServiceTest {
     private CurrencyRepository repository;
 
     @Test
-    public void givenEmployees_whenGetEmployees_thenStatus200() throws Exception {
+    public void convertByCall() throws Exception {
 
     }
 }

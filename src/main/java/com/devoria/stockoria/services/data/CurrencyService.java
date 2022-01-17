@@ -24,6 +24,12 @@ public class CurrencyService {
         this.repository = repository;
     }
 
+    public Double getCurrencyPriceRelatively(String targetCode, String relativeCode) {
+        Currency target = this.findCurrencyByCode(targetCode);
+        Currency relative = this.findCurrencyByCode(relativeCode);
+        return this.getCurrencyPriceRelatively(target, relative);
+    }
+
     public Double getCurrencyPriceRelatively(Currency target, Currency relative) {
         String customizedEndpoint = this.currencyConverterEndpoint.replace("{from}", relative.getCode()).replace("{to}", target.getCode());
         HashMap<String, Double> result = this.restTemplate.getForObject(customizedEndpoint, HashMap.class);
