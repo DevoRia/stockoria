@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class FundService {
@@ -32,6 +33,11 @@ public class FundService {
                 .build();
 
         return this.repository.save(fund);
+    }
+
+    public List<Fund> findAll(HttpServletRequest request) {
+        User currentUser = this.userService.getCurrentUser(request);
+        return this.repository.findAllByUser(currentUser.getId().toHexString());
     }
 
 }

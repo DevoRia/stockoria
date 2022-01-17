@@ -33,6 +33,8 @@ public class Transaction {
     @LastModifiedDate
     private Date lastModifiedDate = new Date();
 
+    private Date date;
+
     @DocumentReference
     private Currency currency;
 
