@@ -32,7 +32,7 @@ public class AwsCognitoJwtAuthFilter extends GenericFilter {
             authentication = this.cognitoIdTokenProcessor.authenticate((HttpServletRequest) request);
             if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                this.userRepository.findOneAndModifyByUsername(((User) authentication.getPrincipal()).getUsername());
+                this.userRepository.initUser(((User) authentication.getPrincipal()).getUsername());
             }
         } catch (Exception var6) {
             logger.error("Cognito ID Token processing error", var6);

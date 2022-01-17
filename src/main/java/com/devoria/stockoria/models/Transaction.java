@@ -49,4 +49,7 @@ public class Transaction {
     private Item item;
 
     private Double itemAmount;
+
+    @DocumentReference
+    private User user;
 }

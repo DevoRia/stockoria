@@ -56,4 +56,6 @@ public class Estimation {
 
     private Date endDate;
 
+    @DocumentReference
+    private User user;
 }

@@ -48,4 +48,6 @@ public class Item {
     @DocumentReference
     private Category category;
 
+    @DocumentReference
+    private User user;
 }

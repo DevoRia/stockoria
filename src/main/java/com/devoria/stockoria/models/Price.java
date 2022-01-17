@@ -39,4 +39,7 @@ public class Price {
     private Currency currency;
 
     private PriceCategory priceCategory;
+
+    @DocumentReference
+    private User user;
 }

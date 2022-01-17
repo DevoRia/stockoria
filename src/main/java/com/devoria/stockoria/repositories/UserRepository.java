@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<User, ObjectId> {
 
-    default void findOneAndModifyByUsername(String username) {
+    default void initUser(String username) {
         User userExample = new User();
         userExample.setUsername(username);
 
