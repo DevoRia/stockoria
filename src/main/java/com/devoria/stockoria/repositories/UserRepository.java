@@ -1,11 +1,11 @@
 package com.devoria.stockoria.repositories;
 
 import com.devoria.stockoria.models.User;
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.Optional;
 
@@ -25,5 +25,8 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
             this.save(userExample);
         }
     }
+
+    @Query("{ 'username' : ?0 }")
+    User findUserByUsername(String username);
 
 }
