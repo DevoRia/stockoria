@@ -3,15 +3,13 @@ package com.devoria.stockoria.controllers;
 import com.devoria.stockoria.data.fund.FundDto;
 import com.devoria.stockoria.models.Fund;
 import com.devoria.stockoria.services.data.FundService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
+@RequestMapping("/fund")
 public class FundController {
 
     private final FundService fundService;
@@ -20,12 +18,12 @@ public class FundController {
         this.fundService = fundService;
     }
 
-    @PostMapping("/fund")
+    @PostMapping
     public Fund create(@RequestBody FundDto fundDto, HttpServletRequest req) {
         return this.fundService.create(fundDto, req);
     }
 
-    @GetMapping("/fund")
+    @GetMapping
     public List<Fund> get(HttpServletRequest req) {
         return this.fundService.findAll(req);
     }
