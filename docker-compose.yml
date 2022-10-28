@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15.0
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_DB: stockoria
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      network: stockoria
+networks:
+  stockoria:
