@@ -4,18 +4,13 @@ import {
 import { AuthService } from './auth.service';
 import { AuthDTO } from './dto/AuthDTO';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {
   }
 
-  @Get('user')
-  getUser(@Body() dto: AuthDTO) {
-    return this.authService.signIn(dto);
-  }
-
-  @Post('user')
+  @Post()
   createUser(@Body() dto: AuthDTO) {
-    return this.authService.createUser(dto);
+    return this.authService.authenticateUser(dto);
   }
 }

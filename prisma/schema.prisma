@@ -15,14 +15,15 @@ model User {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    email String
-    hash String
+    email String?
+    username String @unique
 
     firstName String?
     lastName String?
     transactions Transaction[]
 
     @@map("users")
+    @@unique([email, username])
 }
 
 model Transaction {

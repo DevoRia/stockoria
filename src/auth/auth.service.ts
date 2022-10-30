@@ -1,59 +1,88 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import * as argon from 'argon2';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { AuthDTO } from './dto/AuthDTO';
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
+import { Request } from 'express';
+
+import jwtDecode from 'jwt-decode';
+import { AuthConfig } from './auth.config';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthDTO } from './dto/AuthDTO';
 
 @Injectable()
 export class AuthService {
+  private readonly userPool: CognitoUserPool;
+
   constructor(
-    private prisma: PrismaService,
-    private config: ConfigService,
-    private jwtService: JwtService,
+    private readonly authConfig: AuthConfig,
+    private readonly prisma: PrismaService,
   ) {
-  }
-
-  async createUser(dto: AuthDTO) {
-    const hash = await argon.hash(dto.password);
-    return this.prisma.user.create({
-      data: {
-        email: dto.email,
-        hash,
-      },
+    const cognitoConfig = authConfig.get();
+    this.userPool = new CognitoUserPool({
+      UserPoolId: cognitoConfig.userPoolId,
+      ClientId: cognitoConfig.clientId,
     });
   }
 
-  async signIn(dto: AuthDTO) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user) {
-      throw new ForbiddenException('Invalid credentials');
-    }
+  decodeJwtFromRequest(request: Request) {
+    const decoded = jwtDecode(request.headers.authorization);
 
-    const pwMatches = await argon.verify(
-      user.hash,
-      dto.password,
-    );
-    if (!pwMatches) {
-      throw new ForbiddenException(
-        'Credentials incorrect',
-      );
-    }
-    return this.verifyToken(user.id, user.email);
-  }
-
-  async verifyToken(userId, email) {
-    const payload = {
-      userId,
-      email,
+    return {
+      username: decoded['cognito:username'],
     };
-    return this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
-      secret: this.config.get('JWT_SECRET'),
+  }
+
+  authenticateUser(user: AuthDTO) {
+    const { username, password } = user;
+
+    const authenticationDetails = new AuthenticationDetails({
+      Username: username,
+      Password: password,
     });
+    const userData = {
+      Username: username,
+      Pool: this.userPool,
+    };
+
+    const newUser = new CognitoUser(userData);
+
+    return new Promise((resolve, reject) => newUser.authenticateUser(authenticationDetails, {
+      onSuccess: async (result) => {
+        await this.prisma.user.upsert(
+          {
+            where: {
+              username: result.getIdToken().payload['cognito:username'],
+            },
+            update: {},
+            create: {
+              username: result.getIdToken().payload['cognito:username'],
+            },
+          },
+        );
+        resolve(result);
+      },
+      onFailure: (err) => {
+        reject(err);
+      },
+      newPasswordRequired: (
+        userAttributes: any,
+        requiredAttributes: any,
+      ) => {
+        newUser.completeNewPasswordChallenge(
+          authenticationDetails.getPassword(),
+          {},
+          {
+            onSuccess: (user) => {
+              resolve(user);
+            },
+            onFailure: (error) => {
+              reject(error);
+            },
+          },
+        );
+      },
+    }));
   }
 }
