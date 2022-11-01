@@ -10,7 +10,7 @@ import jwtDecode from 'jwt-decode';
 import { AuthConfig } from './auth.config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
-import {IRequest} from "./contracts/common";
+import {IRequest, Token} from './contracts/common';
 
 @Injectable()
 export class AuthService {
@@ -28,11 +28,11 @@ export class AuthService {
   }
 
   decodeJwtFromRequest(request: IRequest) {
-    const decoded = jwtDecode(request.headers.authorization);
+    const decoded: Token = jwtDecode(request.headers.authorization);
 
     return {
       username: decoded['cognito:username'],
-      email: decoded['email']
+      email: decoded.email,
     };
   }
 

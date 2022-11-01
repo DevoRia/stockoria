@@ -1,6 +1,8 @@
-import {Controller, Get, Req, UseGuards} from '@nestjs/common';
+import {
+  Controller, Get, Req, UseGuards,
+} from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/auth.guard';
-import {IRequest} from "../auth/contracts/common";
+import { IRequest } from '../auth/contracts/common';
 
 @Controller('api/user')
 export class UserController {
