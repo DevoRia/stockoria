@@ -9,7 +9,8 @@ import { Request } from 'express';
 import jwtDecode from 'jwt-decode';
 import { AuthConfig } from './auth.config';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDTO } from './dto/AuthDTO';
+import { AuthDto } from './dto/auth.dto';
+import {IRequest} from "./contracts/common";
 
 @Injectable()
 export class AuthService {
@@ -26,21 +27,23 @@ export class AuthService {
     });
   }
 
-  decodeJwtFromRequest(request: Request) {
+  decodeJwtFromRequest(request: IRequest) {
     const decoded = jwtDecode(request.headers.authorization);
 
     return {
       username: decoded['cognito:username'],
+      email: decoded['email']
     };
   }
 
-  authenticateUser(user: AuthDTO) {
+  authenticateUser(user: AuthDto) {
     const { username, password } = user;
 
     const authenticationDetails = new AuthenticationDetails({
       Username: username,
       Password: password,
     });
+
     const userData = {
       Username: username,
       Pool: this.userPool,
@@ -50,14 +53,15 @@ export class AuthService {
 
     return new Promise((resolve, reject) => newUser.authenticateUser(authenticationDetails, {
       onSuccess: async (result) => {
+        const username = result.getIdToken().payload['cognito:username'];
         await this.prisma.user.upsert(
           {
             where: {
-              username: result.getIdToken().payload['cognito:username'],
+              username,
             },
             update: {},
             create: {
-              username: result.getIdToken().payload['cognito:username'],
+              username,
             },
           },
         );
