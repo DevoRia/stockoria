@@ -4,13 +4,12 @@ import {
   CognitoUser,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
-import { Request } from 'express';
 
 import jwtDecode from 'jwt-decode';
 import { AuthConfig } from './auth.config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto/auth.dto';
-import {IRequest, Token} from './contracts/common';
+import { IRequest, Token } from './contracts/common';
 
 @Injectable()
 export class AuthService {
