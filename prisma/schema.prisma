@@ -11,32 +11,130 @@ datasource db {
 }
 
 model User {
-    id Int @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    email String?
-    username String @unique
+  email    String?
+  username String  @unique
 
-    firstName String?
-    lastName String?
-    transactions Transaction[]
+  firstName       String?
+  lastName        String?
+  transactions    Transaction[]
+  Total           Total[]
+  Fund            Fund[]
+  FundTransaction FundTransaction[]
 
-    @@map("users")
-    @@unique([email, username])
+  @@unique([email, username])
+  @@map("users")
+}
+
+model Valute {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  short       String
+  icon        String
+  description String?
+
+  Valute          ValuteExchange[]  @relation("Valute")
+  ValuteToConvert ValuteExchange[]  @relation("ValuteToConvert")
+  Transaction     Transaction[]
+  Total           Total[]
+  FundTransaction FundTransaction[]
+
+  @@unique([short, icon])
+  @@map("valutes")
+}
+
+model ValuteExchange {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  valuteId          Int
+  valuteToConvertId Int
+  valute            Valute @relation(fields: [valuteId], references: [id], name: "Valute")
+  valuteToConvert   Valute @relation(fields: [valuteToConvertId], references: [id], name: "ValuteToConvert")
+  value_buy         Int
+  value_sell        Int
+
+  @@map("valute-exchanges")
 }
 
 model Transaction {
-    id Int @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    value Int
-    description String?
+  value       Int
+  usd_value   Int
+  description String?
 
-    userId Int
-    user User @relation(fields: [userId], references: [id])
+  valuteId Int
+  valute   Valute @relation(fields: [valuteId], references: [id])
 
-    @@map("transactions")
+  status String // pending, scheduled, rejected, complete
+  type   String // income expense
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("transactions")
 }
 
+model Total {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  from DateTime
+  to   DateTime
+
+  value Int
+  type  String
+
+  valuteId Int
+  valute   Valute @relation(fields: [valuteId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("totals")
+}
+
+model Fund {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       Int
+  description String?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("fund")
+}
+
+model FundTransaction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  value       Int
+  usd_value   Int
+  description String?
+
+  valuteId Int
+  valute   Valute @relation(fields: [valuteId], references: [id])
+
+  status String // pending, scheduled, rejected, complete
+  type   String // income expense toFund
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("fund-transactions")
+}
