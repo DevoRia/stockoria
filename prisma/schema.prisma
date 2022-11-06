@@ -29,7 +29,7 @@ model User {
   @@map("users")
 }
 
-model Valute {
+model Currency {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -38,29 +38,29 @@ model Valute {
   icon        String @unique
   description String?
 
-  Valute          ValuteExchange[]  @relation("Valute")
-  ValuteToConvert ValuteExchange[]  @relation("ValuteToConvert")
+  Currency          CurrencyExchange[]  @relation("Currency")
+  CurrencyToConvert CurrencyExchange[]  @relation("CurrencyToConvert")
   Transaction     Transaction[]
   Total           Total[]
   FundTransaction FundTransaction[]
 
   @@unique([short, icon])
-  @@map("valutes")
+  @@map("currency")
 }
 
-model ValuteExchange {
+model CurrencyExchange {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  valuteId          Int
-  valuteToConvertId Int
-  valute            Valute @relation(fields: [valuteId], references: [id], name: "Valute")
-  valuteToConvert   Valute @relation(fields: [valuteToConvertId], references: [id], name: "ValuteToConvert")
-  value_buy         Int
-  value_sell        Int
+  currencyId          Int
+  currencyToConvertId Int
+  currency            Currency @relation(fields: [currencyId], references: [id], name: "Currency")
+  currencyToConvert   Currency @relation(fields: [currencyToConvertId], references: [id], name: "CurrencyToConvert")
+  value_buy         Float
+  value_sell        Float
 
-  @@map("valute-exchanges")
+  @@map("currency-exchanges")
 }
 
 model Transaction {
@@ -68,12 +68,12 @@ model Transaction {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  value       Int
-  usd_value   Int
+  value       Float
+  usd_value   Float
   description String?
 
-  valuteId Int
-  valute   Valute @relation(fields: [valuteId], references: [id])
+  currencyId Int
+  currency   Currency @relation(fields: [currencyId], references: [id])
 
   status String // pending, scheduled, rejected, complete
   type   String // income expense
@@ -92,11 +92,11 @@ model Total {
   from DateTime
   to   DateTime
 
-  value Int
+  value Float
   type  String
 
-  valuteId Int
-  valute   Valute @relation(fields: [valuteId], references: [id])
+  currencyId Int
+  currency   Currency @relation(fields: [currencyId], references: [id])
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
@@ -125,12 +125,12 @@ model FundTransaction {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  value       Int
-  usd_value   Int
+  value       Float
+  usd_value   Float
   description String?
 
-  valuteId Int
-  valute   Valute @relation(fields: [valuteId], references: [id])
+  currencyId Int
+  currency   Currency @relation(fields: [currencyId], references: [id])
 
   status String // pending, scheduled, rejected, complete
   type   String // income expense toFund
