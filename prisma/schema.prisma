@@ -15,7 +15,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email    String?
+  email    String? @unique
   username String  @unique
 
   firstName       String?
@@ -34,8 +34,8 @@ model Valute {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  short       String
-  icon        String
+  short       String @unique
+  icon        String @unique
   description String?
 
   Valute          ValuteExchange[]  @relation("Valute")
@@ -109,8 +109,10 @@ model Fund {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       Int
+  title       String
   description String?
+
+  isDeleted Boolean?
 
   userId Int
   user   User @relation(fields: [userId], references: [id])
