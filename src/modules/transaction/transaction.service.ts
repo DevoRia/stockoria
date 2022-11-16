@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '../interfaces/user/user.interface';
+import { User } from '../../interfaces/user/user.interface';
 import { TransactionDto } from './dto/transaction.dto';
-import { TransactionStatus, TransactionType } from '../interfaces/transaction/transaction.interface';
+import { TransactionStatus, TransactionType } from '../../interfaces/transaction/transaction.interface';
 
 @Injectable()
 export class TransactionService {

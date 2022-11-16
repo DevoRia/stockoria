@@ -11,4 +11,8 @@ export class CurrencyService {
   create(data: CurrencyDto) {
     return this.prisma.currency.create({ data });
   }
+
+  convert() {
+
+  }
 }

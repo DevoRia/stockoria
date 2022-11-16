@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
 import { HealthController } from './health.controller';
-import { FundModule } from './fund/fund.module';
-import { CurrencyModule } from './currency/currency.module';
-import { TransactionModule } from './transaction/transaction.module';
+import { FundModule } from './modules/fund/fund.module';
+import { CurrencyModule } from './modules/currency/currency.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 
 @Module({
   imports: [
