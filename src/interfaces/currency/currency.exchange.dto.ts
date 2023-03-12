@@ -1,6 +1,6 @@
 export interface CurrencyExchangeDto {
-  from: number;
-  to: number;
+  from: string;
+  to: string;
   amount?: number;
 }
 
