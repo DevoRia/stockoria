@@ -1,12 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '../../interfaces/user/user.interface';
 import { TransactionDto } from './dto/transaction.dto';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../interfaces/transaction/transaction.interface';
+import { TransactionStatus, TransactionType } from '../../interfaces/transaction/transaction.interface';
 import { ExchangeRateService } from '../../integration/exchange-rate.service';
+import { TransactionInputWhereParams } from '../../interfaces/transaction/transaction.params';
 
 @Injectable()
 export class TransactionService {
@@ -15,7 +13,7 @@ export class TransactionService {
     private readonly exchangeRateService: ExchangeRateService,
   ) {}
 
-  findAll({ username } : User) {
+  findAll({ username } : User, args: TransactionInputWhereParams = {}) {
     return this.prisma.transaction.findMany({
       where: {
         user: {
@@ -23,6 +21,7 @@ export class TransactionService {
             username,
           },
         },
+        ...args,
       },
       include: {
         currency: true,
@@ -79,13 +78,19 @@ export class TransactionService {
   ) {
     return this.prisma.transaction.create({
       data: {
-        ...dto,
+        value: dto.value,
+        description: dto.description,
         usd_value: dto.value,
         status: TransactionStatus.COMPLETE,
         type,
         currency: {
           connect: {
             short: dto.currency,
+          },
+        },
+        account: {
+          connect: {
+            id: dto.accountId,
           },
         },
         user: {

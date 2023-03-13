@@ -1,5 +1,5 @@
 import {
-  Body, Controller, Get, Post, Query, Req, UseGuards,
+  Body, Controller, Get, Param, Post, Query, Req, UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/auth.guard';
 import { IRequest } from '../auth/contracts/common';
@@ -38,5 +38,15 @@ export class TransactionController {
   @UseGuards(JwtGuard)
   expense(@Body() dto: TransactionDto, @Req() req: IRequest) {
     return this.transactionService.transaction(dto, req.userData, TransactionType.EXPENSE);
+  }
+
+  @Get('/account/:id')
+  @UseGuards(JwtGuard)
+  getTransactionsByAccount(@Param('id') id, @Req() req: IRequest) {
+    if (!Number(id)) {
+      throw new Error('id must be a number');
+    }
+
+    return this.transactionService.findAll(req.userData, { accountId: Number(id) });
   }
 }

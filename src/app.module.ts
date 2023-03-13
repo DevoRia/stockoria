@@ -7,6 +7,7 @@ import { HealthController } from './health.controller';
 import { FundModule } from './modules/fund/fund.module';
 import { CurrencyModule } from './modules/currency/currency.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { AccountModule } from './modules/account/account.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
     FundModule,
     CurrencyModule,
     TransactionModule,
+    AccountModule,
     UserModule,
     PrismaModule,
   ],

@@ -21,9 +21,9 @@ model User {
   firstName       String?
   lastName        String?
   transactions    Transaction[]
-  Total           Total[]
   Fund            Fund[]
   FundTransaction FundTransaction[]
+  Account Account[]
 
   @@unique([email, username])
   @@map("users")
@@ -41,8 +41,8 @@ model Currency {
   Currency          CurrencyExchange[]  @relation("Currency")
   CurrencyToConvert CurrencyExchange[]  @relation("CurrencyToConvert")
   Transaction     Transaction[]
-  Total           Total[]
   FundTransaction FundTransaction[]
+  Account Account[]
 
   @@unique([short, icon])
   @@map("currency")
@@ -75,6 +75,9 @@ model Transaction {
   currencyId Int
   currency   Currency @relation(fields: [currencyId], references: [id])
 
+  accountId Int
+  account   Account @relation(fields: [accountId], references: [id])
+
   status String // pending, scheduled, rejected, complete
   type   String // income expense
 
@@ -82,26 +85,6 @@ model Transaction {
   user   User @relation(fields: [userId], references: [id])
 
   @@map("transactions")
-}
-
-model Total {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  from DateTime
-  to   DateTime
-
-  value Float
-  type  String
-
-  currencyId Int
-  currency   Currency @relation(fields: [currencyId], references: [id])
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
-  @@map("totals")
 }
 
 model Fund {
@@ -140,3 +123,29 @@ model FundTransaction {
 
   @@map("fund-transactions")
 }
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  address String
+  provider String?
+  network String?
+
+  legalEntity String
+
+  currencyId Int
+  currency   Currency @relation(fields: [currencyId], references: [id])
+
+  transactions Transaction[]
+
+  type   String // IBAN, crypto, physical,
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  @@map("account")
+}
+
